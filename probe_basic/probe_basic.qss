@@ -80,6 +80,7 @@ ActionButton[action_id="0"]:checked {
     background:  qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(226, 64, 64, 255), stop:0.446154 rgba(204, 0, 0, 255), stop:0.764103 rgba(225, 67, 67, 255), stop:1 rgba(249, 142, 142, 255));
 }
 
+
 VCPLineEdit,
 QLineEdit {
     border-style: transparent;
@@ -524,31 +525,5 @@ SubCallButton:checked[option="true"] {
 
 SubCallButton:checked[option="false"] {
     background:  qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(85, 85, 238, 255), stop:0.544974 rgba(90, 91, 239, 255), stop:1 rgba(126, 135, 243, 255));
-}
-
-/*===========================================================================*/
-/*                             tool and offset table                         */
-/*===========================================================================*/
-
-QHeaderView {
-    font: 14pt "Bebas Kai";
-    background-color: rgb(220, 220, 220);
-    color: black;
-    border: none;
-}
-
-ToolTable, OffsetTable {
-    border-top: 8px rgb(120, 120, 120);
-    border-left: 4px  rgb(120, 120, 120);
-    border-bottom: 5px rgb(120, 120, 120);
-    border-right: 4px rgb(120, 120, 120);
-    border-radius: 5px;
-    border-color: rgb(120, 120, 120);
-    border-style: solid;
-    background-color: rgb(120, 120, 120);
-    gridline-color: rgb(203, 203, 203);
-    alternate-background-color: rgb(90, 90, 90);
-    color: white;
-    font: 15pt "Bebas Kai";
 }
 

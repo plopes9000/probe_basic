@@ -5,15 +5,15 @@ import QtQuick.Layouts 1.3
 Rectangle {
     id: rectangle
     visible: true
-    width: 550
+    width: 471
     color: "#939695"
     opacity: 1
-    height: 550
+    height: 471
 
     Image {
         id: atc_holder
-        width: 550
-        height: 550
+        width: 471
+        height: 471
         visible: true
         x: parent.width / 2 - width / 2
         y: parent.height / 2 - height / 2
@@ -42,11 +42,11 @@ Rectangle {
 
                 height: atc_holder.height/2
                 transformOrigin: Item.Bottom
-                rotation: -index * 360/pocket_slots + 90
+                rotation: -index * 360/pocket_slots + start_pocket_pos
                 x: atc_holder.width/2
                 y: 0
 
-                property string pocket_num: index+1
+                property string pocket_num: index+start_pocket
                 property var anim: pocket_anim
 
                 Rectangle {
@@ -61,7 +61,7 @@ Rectangle {
                     anchors.top: parent.top
                     anchors.topMargin: pocket_position
                     border.width: 0
-                    rotation: 360/pocket_slots * index - 90
+                    rotation: 360/pocket_slots * index - start_pocket_pos
 
 
                     Text {
@@ -97,13 +97,13 @@ Rectangle {
                 id: tool_item
                 height: atc_holder.height/2
                 transformOrigin: Item.Bottom
-                rotation: -index * 360/pocket_slots + 90
+                rotation: -index * 360/pocket_slots + start_pocket_pos
                 x: atc_holder.width/2
                 y: 0
 
                 state: "visible"
 
-                property int tool_num: index+1
+                property int tool_num: index+start_pocket
                 property var anim: tool_anim
 
                 Rectangle {
@@ -118,7 +118,7 @@ Rectangle {
                     anchors.top: parent.top
                     anchors.topMargin: 4
                     border.width: 2
-                    rotation: 360/pocket_slots * index - 90
+                    rotation: 360/pocket_slots * index - start_pocket_pos
 
                     Text {
                         id: tool_text
@@ -201,6 +201,8 @@ Rectangle {
     property int anim_duration: 0;
 
     // Carousel Properties
+    property int start_pocket: 1;
+    property int start_pocket_pos: 90;
     property int pocket_slots: 12;
 
     property int pocket_position: 100;
@@ -255,6 +257,8 @@ Rectangle {
         target: atc_spiner;
 
         onPocketSig: {
+            start_pocket = first_pocket;
+            start_pocket_pos = first_pocket_pos;
             pocket_slots = pockets;
             if (pocket_slots == 8) {
                 pocket_position = 130;
@@ -304,12 +308,13 @@ Rectangle {
         }
 
         onHideToolSig: {
-            tool_slot.itemAt(pocket - 1).state = "hidden";
+            //console.log("HideToolSig p:" + pocket + " s: " + start_pocket);
+            tool_slot.itemAt(pocket - start_pocket).state = "hidden";
         }
 
         onShowToolSig: {
-            tool_slot.itemAt(pocket - 1).tool_num = tool_num;
-            tool_slot.itemAt(pocket - 1).state = "visible";
+            tool_slot.itemAt(pocket - start_pocket).tool_num = tool_num;
+            tool_slot.itemAt(pocket - start_pocket).state = "visible";
         }
 
         onRotateSig: {

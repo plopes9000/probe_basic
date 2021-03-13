@@ -23,6 +23,8 @@ class ProbeBasic(VCPMainWindow):
     def __init__(self, *args, **kwargs):
         super(ProbeBasic, self).__init__(*args, **kwargs)
         self.run_from_line_Num.setValidator(QRegExpValidator(QRegExp("[0-9]*")))
+        self.dynatc_left.iniFilePrefix = "LEFT_"
+        self.dynatc_right.iniFilePrefix = "RIGHT_"
 
     @Slot(QAbstractButton)
     def on_probetabGroup_buttonClicked(self, button):
@@ -91,7 +93,6 @@ class ProbeBasic(VCPMainWindow):
             lineNum = int(self.run_from_line_Num.text())
         except:
             return False
-
         actions.program_actions.run(lineNum)
 
 

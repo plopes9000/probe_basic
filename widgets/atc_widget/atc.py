@@ -12,7 +12,7 @@ ctypes.CDLL(ctypes.util.find_library("GL"), mode=ctypes.RTLD_GLOBAL)
 # end of Workarround
 
 
-from qtpy.QtCore import Signal, Slot, QUrl, QTimer
+from qtpy.QtCore import Property, Signal, Slot, QUrl, QTimer
 from qtpy.QtQuickWidgets import QQuickWidget
 
 from qtpyvcp.plugins import getPlugin
@@ -26,11 +26,11 @@ WIDGET_PATH = os.path.dirname(os.path.abspath(__file__))
 INIFILE = linuxcnc.ini(os.getenv("INI_FILE_NAME"))
 
 class DynATC(QQuickWidget):
-    pocketSig = Signal(int, arguments=['pockets'])
+    pocketSig = Signal(int, int, int, arguments=['first_pocket', 'first_pocket_pos', 'pockets'])
     rotateSig = Signal(int, int, arguments=['steps', 'direction'])
 
-    showToolSig = Signal(float, float, arguments=['pocket', 'tool_num'])
-    hideToolSig = Signal(float, arguments=['pocket'])
+    showToolSig = Signal(int, int, arguments=['pocket', 'tool_num'])
+    hideToolSig = Signal(int, arguments=['pocket'])
 
     homeMsgSig = Signal(str, arguments=["message"])
 
@@ -40,11 +40,11 @@ class DynATC(QQuickWidget):
         if IN_DESIGNER:
             return
 
+        self._IniFilePrefix = ""
         self.atc_position = 0
         self.pocket = 1
         self.home = 0
         self.homing = 0
-        self.pocket_slots = int(INIFILE.find("ATC", "POCKETS") or 12)
 
         self.engine().rootContext().setContextProperty("atc_spiner", self)
         qml_path = os.path.join(WIDGET_PATH, "atc.qml")
@@ -56,11 +56,11 @@ class DynATC(QQuickWidget):
         self.status_tool_table = None
         self.pockets = dict()
         self.tools = None
+        self.pocket_slots = 0
+        self.start_pocket = 1
+        self.start_pocket_pos = 90
 
-        self.pocketSig.emit(self.pocket_slots)
-
-        for pocket in range(1, self.pocket_slots+1):
-            self.hideToolSig.emit(pocket)
+        self.iniFilePrefix = ""
 
     def hideEvent(self, *args, **kwargs):
         pass  # hack to prevent animation glitch when we are on another tab FIXME
@@ -96,3 +96,19 @@ class DynATC(QQuickWidget):
             self.rotateSig.emit(steps, 1)
         elif direction == "ccw":
             self.rotateSig.emit(steps, -1)
+
+    # ini file prefix
+    @Property(str)
+    def iniFilePrefix(self):
+        return self._IniFilePrefix
+    @iniFilePrefix.setter
+    def iniFilePrefix(self, _IniFilePrefix):
+        self._IniFilePrefix = _IniFilePrefix or ""
+        self.pocket_slots = int(INIFILE.find("ATC", self._IniFilePrefix + "POCKETS") or 12)
+        self.start_pocket = int(INIFILE.find("ATC", self._IniFilePrefix + "START_POCKET") or 1)
+        self.start_pocket_pos = int(INIFILE.find("ATC", self._IniFilePrefix + "START_POCKET_POS") or 90)
+        self.pocketSig.emit(self.start_pocket, self.start_pocket_pos, self.pocket_slots)
+        for pocket in range(self.start_pocket, self.start_pocket+self.pocket_slots):
+            self.hideToolSig.emit(pocket)
+
+
