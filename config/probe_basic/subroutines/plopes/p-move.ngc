@@ -1,0 +1,16 @@
+O<p-move> sub
+  #<x>=#1
+  #<y>=#2
+  #<z>=#3
+  #<incremental>=#4
+  #<r_feed>=#5
+  ;(debug,g91 g38.3 x#<x> y#<y> z#<z> f#<r_feed>)
+  O501 if [#<incremental> EQ 1]
+    g91 g38.3 x#<x> y#<y> z#<z> f#<r_feed>
+  O501 else
+    g90 g38.3 x#<x> y#<y> z#<z> f#<r_feed>
+  O501 end if 
+  O502 if [#5070 EQ 1]
+    (abort, probe tripped unexpectedly)
+  O502 end if
+O<p-move> endsub
