@@ -1,0 +1,39 @@
+o<probe-all-tools> sub
+
+; atc specs
+#<left_positions> = [#<_ini[atc]left_pockets>]    ; left atc pockets
+#<right_positions>= [#<_ini[atc]right_pockets>]    ; right atc pockets
+
+#<my_tool_in_spindle>            = [#<_ini[atc]var_tool_in_spindle>]           ; relies on eg. 4090 to be manually created in linuxcnc.var file
+#<toolstart>                     = [#<_ini[atc]var_tools_start>] ; relies on eg. 4902-4938, #<left_positions> + #<right_positions> to be manually created in linuxcnc.var file
+
+o100 if [##<my_tool_in_spindle> eq 0]
+  m6 T0
+o100 else
+  m61 Q##<my_tool_in_spindle>
+  g43 h##<my_tool_in_spindle>
+o100 endif
+
+; load tools in atc widget
+#<loop_idx>=[#<left_positions>]
+o20 while [ #<loop_idx> gt 0 ]
+  o21 if [ #[#<toolstart>+#<loop_idx>-1] gt 0 ]
+    #<toolno>=#[#<toolstart>+#<loop_idx>-1]
+    m6 T#<toolno> G43 H#<toolno>
+    m26
+  o21 endif
+  #<loop_idx>=[#<loop_idx>-1]
+o20 endwhile
+
+#<loop_idx>=[#<left_positions>+#<right_positions>]
+o22 while [ #<loop_idx> gt #<left_positions>]
+  o23 if [ #[#<toolstart>+#<loop_idx>-1] gt 0 ]
+    #<toolno>=#[#<toolstart>+#<loop_idx>-1]
+    m6 T#<toolno> G43 H#<toolno>
+    m26
+  o23 endif
+  #<loop_idx>=[#<loop_idx>-1]
+o22 endwhile
+
+o<probe-all-tools> endsub
+m2
