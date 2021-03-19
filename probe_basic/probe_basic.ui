@@ -23825,92 +23825,145 @@ QPushButton:checked {
          <height>70</height>
         </size>
        </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_142" stretch="0,0,1,1,0,0">
+       <layout class="QHBoxLayout" name="horizontalLayout_142" stretch="0,0,0,0,0,0,1,1,0,0">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_137" stretch="0,0">
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_60">
-            <item>
-             <widget class="HalButton" name="halbutton_run_lube_cycle">
-              <property name="text">
-               <string>Run Ways Lube</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="HalButton" name="halbutton_dis_ways_lube_cylce">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">QPushButton[pinBaseName=&quot;halbutton-dis-ways-lube-cycle&quot;]:checked {
+         <widget class="HalButton" name="halbutton_machine_lights">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton[pinBaseName=&quot;halbutton-dis-ways-lube-cycle&quot;]:checked {
+    border-radius: 5px;
+    background:  qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(226, 64, 64, 255), stop:0.446154 rgba(204, 0, 0, 255), stop:0.764103 rgba(225, 67, 67, 255), stop:1 rgba(249, 142, 142, 255));
+}</string>
+          </property>
+          <property name="text">
+           <string> Lights </string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="HalButton" name="halbutton_run_lube_cycle">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton[pinBaseName=&quot;halbutton-dis-ways-lube-cycle&quot;]:checked {
+    border-radius: 5px;
+    background:  qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(226, 64, 64, 255), stop:0.446154 rgba(204, 0, 0, 255), stop:0.764103 rgba(225, 67, 67, 255), stop:1 rgba(249, 142, 142, 255));
+}</string>
+          </property>
+          <property name="text">
+           <string> Run Ways Lube </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="HalButton" name="halbutton_dis_ways_lube_cylce">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton[pinBaseName=&quot;halbutton-dis-ways-lube-cycle&quot;]:checked {
     border-radius: 5px;
     background:  qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(226, 64, 64, 255), stop:0.446154 rgba(204, 0, 0, 255), stop:0.764103 rgba(225, 67, 67, 255), stop:1 rgba(249, 142, 142, 255));
 }
 </string>
-              </property>
-              <property name="text">
-               <string>  Disable Ways Lube Cycle  </string>
-              </property>
-              <property name="checkable">
-               <bool>true</bool>
-              </property>
-              <property name="checked">
-               <bool>false</bool>
-              </property>
-              <property name="pinBaseName" stdset="0">
-               <string>halbutton-dis-ways-lube-cycle</string>
-              </property>
-              <property name="pulseOnPress" stdset="0">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_68">
-            <item>
-             <widget class="HalButton" name="halbutton_machine_lights">
-              <property name="text">
-               <string>Lights</string>
-              </property>
-              <property name="checkable">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="HalButton" name="halbutton_dis_atc_leftpush_sensors">
-              <property name="styleSheet">
-               <string notr="true">QPushButton[pinBaseName=&quot;halbutton-dis-atc-lp-sensors&quot;]:checked {
+          </property>
+          <property name="text">
+           <string>  ~Ways Lube Cycle  </string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+          <property name="pinBaseName" stdset="0">
+           <string>halbutton-dis-ways-lube-cycle</string>
+          </property>
+          <property name="pulseOnPress" stdset="0">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="HalButton" name="halbutton_dis_atc_leftpush_sensors">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton[pinBaseName=&quot;halbutton-dis-atc-lp-sensors&quot;]:checked {
     border-radius: 5px;
     background:  qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(226, 64, 64, 255), stop:0.446154 rgba(204, 0, 0, 255), stop:0.764103 rgba(225, 67, 67, 255), stop:1 rgba(249, 142, 142, 255));
-}</string>
-              </property>
-              <property name="text">
-               <string> Disable ATC L/P SEN !  </string>
-              </property>
-              <property name="checkable">
-               <bool>true</bool>
-              </property>
-              <property name="checked">
-               <bool>false</bool>
-              </property>
-              <property name="pinBaseName" stdset="0">
-               <string>halbutton-dis-atc-lp-sensors</string>
-              </property>
-              <property name="pulseOnPress" stdset="0">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
+}
+QPushButton[pinBaseName=&quot;halbutton-dis-atc-lp-sensors&quot;]:enable {
+    border-radius: 5px;
+    background:  qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(226, 64, 64, 255), stop:0.446154 rgba(204, 0, 0, 255), stop:0.764103 rgba(225, 67, 67, 255), stop:1 rgba(249, 142, 142, 255));
+}
+</string>
+          </property>
+          <property name="text">
+           <string> ~ATC L/P SEN !  </string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+          <property name="pinBaseName" stdset="0">
+           <string>halbutton-dis-atc-lp-sensors</string>
+          </property>
+          <property name="pulseOnPress" stdset="0">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_137" stretch=""/>
         </item>
         <item>
          <spacer name="horizontalSpacer">
@@ -24046,6 +24099,9 @@ QPushButton:checked {
                   </property>
                   <property name="checkable">
                    <bool>true</bool>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
                   </property>
                   <property name="rules" stdset="0">
                    <string>[{&quot;channels&quot;: [{&quot;url&quot;: &quot;status:all_axes_homed&quot;, &quot;trigger&quot;: true}], &quot;property&quot;: &quot;Style Class&quot;, &quot;expression&quot;: &quot;\&quot;green_text\&quot; if ch[0] else \&quot;red_text\&quot;&quot;, &quot;name&quot;: &quot;test&quot;}]</string>
@@ -32397,6 +32453,12 @@ border-radius: 4px;
            </item>
            <item>
             <widget class="HalSlider" name="halslider_spindle_torque">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>20</height>
+              </size>
+             </property>
              <property name="maximum">
               <number>32800</number>
              </property>

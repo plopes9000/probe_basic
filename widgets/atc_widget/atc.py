@@ -28,6 +28,7 @@ INIFILE = linuxcnc.ini(os.getenv("INI_FILE_NAME"))
 class DynATC(QQuickWidget):
     pocketSig = Signal(int, int, int, arguments=['first_pocket', 'first_pocket_pos', 'pockets'])
     rotateSig = Signal(int, int, arguments=['steps', 'direction'])
+    homeSig = Signal()
 
     showToolSig = Signal(int, int, arguments=['pocket', 'tool_num'])
     hideToolSig = Signal(int, arguments=['pocket'])
@@ -92,10 +93,14 @@ class DynATC(QQuickWidget):
         self.homeMsgSig.emit(msg)
 
     def rotate(self, steps, direction):
+        # print("atc {} widget rotate dir:{} steps:{}".format(self._IniFilePrefix, direction, steps))
         if direction == "cw":
             self.rotateSig.emit(steps, 1)
         elif direction == "ccw":
             self.rotateSig.emit(steps, -1)
+
+    def home(self):
+        self.homeSig.emit()
 
     # ini file prefix
     @Property(str)

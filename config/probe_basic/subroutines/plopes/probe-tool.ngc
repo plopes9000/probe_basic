@@ -1,3 +1,7 @@
+(author: P. Lopes)
+(version: 0.1)
+(date: 04/01/18)
+
 o<probe-tool> sub (measure tool with TS27R)
 
 ; arguments
@@ -79,9 +83,9 @@ o1006 endif
 ;; Z_CLEARANCE=2
 ;; SAFE_HEIGHT=50
 ;; RAPID_FEED=1500
-;; COARSE_FEED=500
-;; COARSE_RPM=750
+;; COARSE_RPM=100
 ;; FINE_RPM=1500
+;; COARSE_FEED=300
 ;; PRECISION=0.005 # to calculate fine feed: feed (mm/min/rot) = precision * spindle rpm
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; Global Vars - need to be manually added to linuxcnc.var once
@@ -149,14 +153,32 @@ M64 P0
 ;; calculate fine feed for requested precision 
 o23 if [#<fine_feed> LE 1]
   #<fine_feed>=5
-  ;(debug, calc. fine feed too small, suing #<fine_feed> mach units/min)
+  ;(debug, calc. fine feed too small, using #<fine_feed> mach units/min)
 o23 else
   ;(debug, calc. fine feed=#<fine_feed> mach units/min)
 o23 end if
 
+o24 if [#<tool_xy_diam> GT 50]
+  (print, probing tools with a diameter larger than 50mm is disabled)
+  o<probe-tool> return 
+o24 elseif [#<tool_xy_diam> GT 30]
+  ; scale rpm based on diameter, assume ini file rpm values are good for 10mm 
+  #<fine_rpm>=[#<fine_rpm>*[#<tool_xy_diam>/10]*0.5]
+  #<fine_feed>=[#<_ini[TOOLSETTER]PRECISION>*#<fine_rpm>*0.9*10/#<tool_xy_diam>/2*0.7]
+  #<coarse_rpm>=[#<coarse_rpm>*[#<tool_xy_diam>/10]*0.7]
+  #<coarse_feed>=[#<_ini[TOOLSETTER]COARSE_FEED>*10/#<tool_xy_diam>/2]
+o24 elseif [#<tool_xy_diam> GT 10]
+  ; scale rpm based on diameter, assume ini file rpm values are good for 10mm 
+  #<fine_rpm>=[#<fine_rpm>*[#<tool_xy_diam>/10]]
+  #<fine_feed>=[#<_ini[TOOLSETTER]PRECISION>*#<fine_rpm>*0.9*10/#<tool_xy_diam>]
+  #<coarse_rpm>=[#<coarse_rpm>*[#<tool_xy_diam>/10]]
+  #<coarse_feed>=[#<_ini[TOOLSETTER]COARSE_FEED>*10/#<tool_xy_diam>]
+o24 endif
+
 g54 ; to be able to use #5221,2,3
 
 ;; ref tool cycle
+
 o09 if [#<ref_tool> EQ 1]
   (measure reference tool - WITHOUT ROTATION)
   (position above toolsetter)

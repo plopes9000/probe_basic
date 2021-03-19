@@ -211,7 +211,6 @@ Rectangle {
 
     property int prev_pocket: 1;
 
-
     function rotate(steps, direction) {
 
         //        console.log("ROTATE")
@@ -235,7 +234,7 @@ Rectangle {
             var tool_from = -anim_from;
             var tool_to = -anim_to;
 
-            // console.log("ROTATE TOOL FROM " + tool_from + " TO " + tool_to);
+            console.log("ROTATE TOOL FROM " + tool_from + " TO " + tool_to);
             rotate_tool(tool_slot.itemAt(i), anim_duration, tool_from, tool_to);
         }
 
@@ -246,11 +245,14 @@ Rectangle {
             var pocket_from = -anim_from;
             var pocket_to = -anim_to;
 
-            // console.log("ROTATE POCKET SLOT FROM " + pocket_from + " TO " + pocket_to);
+            console.log("ROTATE POCKET SLOT FROM " + pocket_from + " TO " + pocket_to);
             rotate_tool(pocket_slot.itemAt(j), anim_duration, pocket_from, pocket_to);
         }
 
         anim_from = anim_to;
+    }
+
+    function home() {
     }
 
     Connections {
@@ -319,6 +321,10 @@ Rectangle {
 
         onRotateSig: {
             rotate(steps, direction);
+        }
+
+        onHomeSig: {
+            home();
         }
 
         onHomeMsgSig: {
