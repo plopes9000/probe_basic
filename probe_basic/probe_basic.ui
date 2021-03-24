@@ -236,7 +236,7 @@ bottom-margin: 0px;
            <enum>QTabWidget::South</enum>
           </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="main_tab">
            <attribute name="title">
@@ -2576,7 +2576,7 @@ QHeaderView {
 }</string>
                    </property>
                    <property name="text">
-                    <string>T0</string>
+                    <string>T25</string>
                    </property>
                    <property name="alignment">
                     <set>Qt::AlignCenter</set>
@@ -3686,7 +3686,7 @@ font: 16pt &quot;Bebas Kai&quot;;
 }</string>
                    </property>
                    <property name="text">
-                    <string>T0</string>
+                    <string>T25</string>
                    </property>
                    <property name="alignment">
                     <set>Qt::AlignCenter</set>
@@ -6129,7 +6129,7 @@ ToolTable {
                           <bool>true</bool>
                          </property>
                          <property name="displayColumns" stdset="0">
-                          <string>TPDZIJQR</string>
+                          <string>TPDZIQR</string>
                          </property>
                          <property name="currentToolColor" stdset="0">
                           <color>
@@ -6961,7 +6961,7 @@ color: rgb(255, 255, 255);
 }</string>
                  </property>
                  <property name="text">
-                  <string>T0</string>
+                  <string>T25</string>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -23963,7 +23963,7 @@ QPushButton[pinBaseName=&quot;halbutton-dis-atc-lp-sensors&quot;]:enable {
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_137" stretch=""/>
+         <layout class="QHBoxLayout" name="horizontalLayout_137"/>
         </item>
         <item>
          <spacer name="horizontalSpacer">
@@ -25238,7 +25238,7 @@ QPushButton[pinBaseName=&quot;halbutton-dis-atc-lp-sensors&quot;]:enable {
               <enum>Qt::NoFocus</enum>
              </property>
              <property name="statusTip">
-              <string>Can't run program when no file loaded</string>
+              <string>Run program</string>
              </property>
              <property name="styleSheet">
               <string notr="true">QPushButton {
@@ -26529,7 +26529,7 @@ QPushButton:checked {
            <item>
             <widget class="MDIButton" name="G43">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -32460,7 +32460,7 @@ border-radius: 4px;
               </size>
              </property>
              <property name="maximum">
-              <number>32800</number>
+              <number>328000</number>
              </property>
              <property name="singleStep">
               <number>1</number>
@@ -32469,10 +32469,10 @@ border-radius: 4px;
               <number>500</number>
              </property>
              <property name="value">
-              <number>32800</number>
+              <number>328000</number>
              </property>
              <property name="sliderPosition">
-              <number>32800</number>
+              <number>328000</number>
              </property>
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -33009,7 +33009,7 @@ border-radius: 4px;
 }</string>
              </property>
              <property name="text">
-              <string>1000.0</string>
+              <string>0.0</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -34925,16 +34925,16 @@ font: 11pt bebas kai;
   </property>
  </designerdata>
  <buttongroups>
-  <buttongroup name="fileviewerbtnGroup"/>
-  <buttongroup name="plotorthoperspbtnGroup"/>
   <buttongroup name="customwcsbtnGroup"/>
-  <buttongroup name="probetabGroup"/>
-  <buttongroup name="probehelpGroup"/>
-  <buttongroup name="probemodeGroup"/>
   <buttongroup name="proberoutinebtnGroup"/>
   <buttongroup name="mainorthoperspbtnGroup"/>
-  <buttongroup name="xycalbtnGroup"/>
-  <buttongroup name="probepagewcsbtnGroup"/>
   <buttongroup name="plotviewGroup"/>
+  <buttongroup name="fileviewerbtnGroup"/>
+  <buttongroup name="probehelpGroup"/>
+  <buttongroup name="plotorthoperspbtnGroup"/>
+  <buttongroup name="probemodeGroup"/>
+  <buttongroup name="probepagewcsbtnGroup"/>
+  <buttongroup name="probetabGroup"/>
+  <buttongroup name="xycalbtnGroup"/>
  </buttongroups>
 </ui>

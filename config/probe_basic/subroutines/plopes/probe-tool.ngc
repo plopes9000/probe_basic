@@ -1,6 +1,7 @@
 (author: P. Lopes)
 (version: 0.1)
 (date: 04/01/18)
+(info: TS27r Toolsetter TLO)
 
 o<probe-tool> sub (measure tool with TS27R)
 
@@ -8,67 +9,12 @@ o<probe-tool> sub (measure tool with TS27R)
 ;  t (tool number)
 ;  d (~ XY plane tool diam, precise for ref tool, zero for no diam meas)
 ;  z (=0 ~ Z plane tool diam, zero for same as XY plane -> single point and inserts)
+;  m (=0 measure diameter)
 ;  l (~ aproximate tool length)
+;  r (=1 rotate tool, ingored for ref tool)
 ;  r (=1 rotate tool, ingored for ref tool)
 ;  u (=1 update tooltable)
 ;  f (=0 reference tool)
-
-( UNKNOWN     = 0)
-( MILLING     = 1)
-( HOLE_MAKING = 2)
-( TURNING     = 4)
-( HOLDERS     = 8)
-( PROBE       = 16)
-#<tool_type>=#5413 ( Tool Orientation, here used for tool type, as defined by fusion360 )
-
-o1000 if [EXISTS[#<t>] eq 0 ] 
- #<t>=#5400 (default to tool number in spindle)
-o1000 endif
-
-o1001 if [EXISTS[#<d>] eq 0 ] 
- o10011 if [ #<tool_type> eq 2 ] ( hole making tool type )
-   #<d>=0 (zero aproximate tool diameter)
- o10011 else
-   #<d>=#5412 (default to Tool Front Angle, here used as aproximate tool diameter)
- o10011 endif
-o1001 endif
-
-o1002 if [EXISTS[#<z>] eq 0 ] 
- #<z>=0 (default to 0 z plane tool diameter)
-o1002 endif
-
-o1003 if [EXISTS[#<l>] eq 0 ] 
- #<l>=#5411 (default to Tool Back Angle, here used as aproximate tool length)
-o1003 endif
-
-o1004 if [EXISTS[#<r>] eq 0 ] 
- #<r>=0
- o10041 if [ #<tool_type> eq 1 or #<tool_type> eq 2] ( Milling tool type )
- #<r>=1 ( default to 1 rotate tool, ingored for ref tool)
- o10041 endif
-o1004 endif
-
-o1005 if [EXISTS[#<u>] eq 0 ] 
- #<u>=1 (default to 1 update tool table)
-o1005 endif
-
-o1006 if [EXISTS[#<f>] eq 0 ] 
- #<f>=0
- o10061 if [ #<t> eq  #<_ini[PROBE]TOOL_NUMBER>] ; ini file ref tool number
-   #<f>=1 ( ref tool )
- o10061 endif
-o1006 endif
-
-
-#<tool_number>     =#<t> (tool number)
-#<tool_xy_diam>    =#<d> (~ XY plane tool diam, precise for ref tool, zero for no diam meas)
-#<tool_z_diam>     =#<z> (=0 ~ Z plane tool diam, zero for same as XY plane -> single point and inserts)
-#<tool_length>     =#<l> (~ tool length)
-#<tool_rotate>     =#<r> (=1 rotate tool, ingored for ref tool)
-#<update_tooltable>=#<u> (=1 update tooltable)
-#<ref_tool>        =#<f> (=0 reference tool)
-
-(info: TS27r Toolsetter TLO)
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; ini file params
@@ -79,19 +25,102 @@ o1006 endif
 ;; Z= tool setter G53 Z
 ;; TOOLSETTER_DIAM=12.7
 ;; TOOLSETTER_HEIGHT=14
+;; TOOLSETTER_FLAT_DIAM=8
 ;; BACKOFF=1
 ;; Z_CLEARANCE=2
 ;; SAFE_HEIGHT=50
 ;; RAPID_FEED=1500
 ;; COARSE_RPM=100
 ;; FINE_RPM=1500
-;; COARSE_FEED=300
+;; COARSE_FEED=500
 ;; PRECISION=0.005 # to calculate fine feed: feed (mm/min/rot) = precision * spindle rpm
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; Global Vars - need to be manually added to linuxcnc.var once
 ;; 601 - reference tool position G53 Z
 ;; 602 - measured tool setter diameter
 ;;;;;;;;;;;;;;;;;;;;;;
+
+(tweek subroutine parameters if they were not provided)
+
+
+
+( UNKNOWN          = 0)
+( MILLING          = 1)
+( BALL_END_MILL    = 2)
+( FACE_END_MILL    = 3)
+( CHAMFER_END_MILL = 4)
+( FLAT_END_MILL    = 5)
+( HOLE_MAKING      = 6)
+( TURNING          = 7)
+( HOLDERS          = 8)
+( PROBE            = 9)
+#<tool_type>=#5413 ( Tool Orientation, here used for tool type, as defined by fusion360 )
+
+o1000 if [EXISTS[#<t>] eq 0 ] 
+ #<t>=#5400 (default to tool number in spindle)
+o1000 endif
+
+o1001 if [EXISTS[#<d>] eq 0 ] 
+ o10011 if [ #<tool_type> eq 2 or #<tool_type> eq 3 or #<tool_type> eq 5  ] ( hole making tool type )
+   #<d>=#5410 (default to stored tool diameter)
+ o10011 else
+   #<d>=0 (zero aproximate tool diameter)
+ o10011 endif
+o1001 endif
+
+(approximate tool length)
+o1003 if [EXISTS[#<l>] eq 0 ] 
+ #<l>=#5411 (default to Tool Back Angle, here used as aproximate tool length)
+ o10031 if [ #<l> eq 0 ]
+    (debug, aproximate tool length not provided as argument and not available in I column of the tool table, not safe to to proceed)
+    o<probe-tool> return 
+ o10031 endif 
+o1003 endif
+
+(rotation and z plane tool diameter)
+o1004 if [EXISTS[#<r>] eq 0 ] 
+ #<r>=0
+ (rotate only for Flat End Mills and Face Mills larger than the tool setter flat area)
+ o10041 if [ [#<tool_type> eq 5 or #<tool_type> eq 3 ] and #<d> gt #<_ini[TOOLSETTER]TOOLSETTER_FLAT_DIAM>] 
+   #<r>=1 ( default to 1 rotate tool, ingored for ref tool)
+ o10041 endif
+o1004 endif
+
+(z plane tool diameter)
+o1104 if [EXISTS[#<z>] eq 0 ] 
+ #<z>=0
+ (rotate only for Flat End Mills and Face Mills larger than the tool setter flat area)
+ o11041 if [ [#<tool_type> eq 5 or #<tool_type> eq 3 ] and #<d> gt #<_ini[TOOLSETTER]TOOLSETTER_FLAT_DIAM>] 
+   #<z>=#<d> (default to 0 z plane tool diameter)
+ o11041 endif
+o1104 endif
+
+(measure diameter)
+o1005 if [EXISTS[#<m>] eq 0 ] 
+ #<m>=0 (default to not measure tool dimater)
+o1005 endif
+
+(update tool table?)
+o1006 if [EXISTS[#<u>] eq 0 ] 
+ #<u>=1 (default to 1 update tool table)
+o1006 endif
+
+(is this the ref tool ?)
+o1007 if [EXISTS[#<f>] eq 0 ] 
+ #<f>=0
+ o10071 if [ #<t> eq  #<_ini[TOOLSETTER]REF_TOOL>] ; ini file ref tool number
+   #<f>=1 ( ref tool )
+ o10071 endif
+o1007 endif
+
+#<tool_number>       =#<t> (tool number)
+#<tool_xy_diam>      =#<d> (~ XY plane tool diam, precise for ref tool, zero for no diam meas)
+#<tool_z_diam>       =#<z> (=0 ~ Z plane tool diam, zero for same as XY plane -> single point and inserts, tools smaller than the toolsetter flat area)
+#<measure_tool_diam> =#<m> (measure tool diameter)
+#<tool_length>       =#<l> (~ tool length)
+#<tool_rotate>       =#<r> (=1 rotate tool, ingored for ref tool)
+#<update_tooltable>  =#<u> (=1 update tooltable)
+#<ref_tool>          =#<f> (=0 reference tool)
 
 o07 if [#<tool_number> EQ 0]
   (debug, tool number is zero, unable to proceed)
@@ -130,8 +159,9 @@ g49
 
 ;;activate tool setter
 M64 P0 
+g4 p0.5
 
-;(debug, t=#<tool_number> d=#<tool_xy_diam> z=#<tool_z_diam> l=#<tool_length> r=#<tool_rotate> u=#<update_tooltable> f=#<ref_tool>)
+;(debug, t=#<tool_number> d=#<tool_xy_diam> z=#<tool_z_diam> m=#<measure_tool_diam> l=#<tool_length> r=#<tool_rotate> u=#<update_tooltable> f=#<ref_tool>)
 ;o<probe-tool> return 
 
 
@@ -151,7 +181,7 @@ M64 P0
 #<safe_height>=#<_ini[TOOLSETTER]SAFE_HEIGHT>
 
 ;; calculate fine feed for requested precision 
-o23 if [#<fine_feed> LE 1]
+o23 if [#<fine_feed> LE 5]
   #<fine_feed>=5
   ;(debug, calc. fine feed too small, using #<fine_feed> mach units/min)
 o23 else
@@ -162,18 +192,16 @@ o24 if [#<tool_xy_diam> GT 50]
   (print, probing tools with a diameter larger than 50mm is disabled)
   o<probe-tool> return 
 o24 elseif [#<tool_xy_diam> GT 30]
-  ; scale rpm based on diameter, assume ini file rpm values are good for 10mm 
-  #<fine_rpm>=[#<fine_rpm>*[#<tool_xy_diam>/10]*0.5]
-  #<fine_feed>=[#<_ini[TOOLSETTER]PRECISION>*#<fine_rpm>*0.9*10/#<tool_xy_diam>/2*0.7]
-  #<coarse_rpm>=[#<coarse_rpm>*[#<tool_xy_diam>/10]*0.7]
-  #<coarse_feed>=[#<_ini[TOOLSETTER]COARSE_FEED>*10/#<tool_xy_diam>/2]
+  ; scale feed, assume ini file feed values are good for 10mm 
+  #<fine_feed>=[#<_ini[TOOLSETTER]PRECISION>*#<fine_rpm>*0.9*10/#<tool_xy_diam>*0.75]
+  #<coarse_feed>=[#<_ini[TOOLSETTER]COARSE_FEED>*10/#<tool_xy_diam>*0.75]
 o24 elseif [#<tool_xy_diam> GT 10]
-  ; scale rpm based on diameter, assume ini file rpm values are good for 10mm 
-  #<fine_rpm>=[#<fine_rpm>*[#<tool_xy_diam>/10]]
+  ; scale feed, assume ini file feed values are good for 10mm 
   #<fine_feed>=[#<_ini[TOOLSETTER]PRECISION>*#<fine_rpm>*0.9*10/#<tool_xy_diam>]
-  #<coarse_rpm>=[#<coarse_rpm>*[#<tool_xy_diam>/10]]
   #<coarse_feed>=[#<_ini[TOOLSETTER]COARSE_FEED>*10/#<tool_xy_diam>]
 o24 endif
+
+;(debug, fine_rpm:#<fine_rpm> fine_feed:#<fine_feed> coarse_rpm:#<coarse_rpm> coarse_feed:#<coarse_feed>)
 
 g54 ; to be able to use #5221,2,3
 
@@ -237,10 +265,6 @@ o09 else
 
   (measure tool length)
 
-  o121 if [#<tool_z_diam> EQ 0]
-    #<tool_z_diam>=#<tool_xy_diam>
-  o121 end if
-  
   ;; fetch global vars
   #<ref_tool_z>=#601
   #<toolsetter_diam>=#602
@@ -275,7 +299,7 @@ o09 else
     S#<coarse_rpm> M4 (start spindle in reverse)
   o117 endif
   
-  o118 if [#<tool_xy_diam> NE 0]
+  o118 if [#<measure_tool_diam> EQ 1 and #<tool_xy_diam> NE 0 and #<tool_rotate> EQ 1] 
     ( y+ measure )
     o<p-move> call [0] [-#<tool_xy_diam>/2*1.5-#<toolsetter_diam>/2] [0] [1] [#<rapid_feed>]
     o<p-move> call [0] [0] [-#<z_clearance>-#<toolsetter_height>/2] [1] [#<rapid_feed>]
